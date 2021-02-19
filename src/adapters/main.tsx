@@ -13,5 +13,5 @@ export function addFilm(data: {
 
 export async function getFilms() {
     let query: any = firestore.collection("films")
-    return query.get()
+    return query.orderBy('addDate', 'desc').get()
 }

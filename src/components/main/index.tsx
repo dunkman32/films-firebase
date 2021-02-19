@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {actions, selectors} from '../../modules/Main'
 import {MdRefresh} from "react-icons/md";
 import styled from "styled-components";
-
+import {format, isValid} from 'date-fns'
 const StyledMdRefresh = styled(MdRefresh)`
   color: green;
   margin-left: 1rem;
@@ -64,6 +64,14 @@ const Index = () => {
         dispatch(actions.add.request({name}))
     }, [name])
 
+    const formatDate = (d: number) => {
+        const date = new Date(d)
+        if(isValid(date)) {
+           return format(date, "yyyy.MM.dd 'at' HH:mm:ss")
+        }
+        return 'undefined'
+    }
+
     return (
         <div className="App">
             <hr/>
@@ -74,8 +82,8 @@ const Index = () => {
             </HeadDiv>
             <hr/>
             {
-                rows?.map((r: { id: string, name: string }) => <ListDiv key={r.id}>
-                    <span>{r.id} {r.name && ': '}</span> <span>{r.name}</span>
+                rows?.map((r: { addDate: number, name: string, id: string }) => <ListDiv key={r.id}>
+                    <span>{formatDate(r.addDate)}</span> <span>{r.name}</span>
                 </ListDiv>)
             }
         </div>

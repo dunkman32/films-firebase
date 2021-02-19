@@ -1,6 +1,6 @@
-import {call, all, put, takeLatest} from 'redux-saga/effects'
+import {all, call, put, takeLatest} from 'redux-saga/effects'
 import {actions, constants} from '../index'
-import {getFilms, addFilm} from '../../../adapters/main'
+import {addFilm, getFilms} from '../../../adapters/main'
 
 export function* getList() {
     try {
@@ -21,7 +21,10 @@ export function* getList() {
 export function* addElement(action) {
     const {data} = action.payload
     try {
-        yield call(addFilm, data)
+        yield call(addFilm, {
+            ...data,
+            addDate: (new Date().getTime())
+        })
         yield all([
             put(actions.add.success()),
             put(actions.get.request()),
