@@ -1,75 +1,38 @@
-import { call, all, put, takeLatest } from 'redux-saga/effects'
-import { find } from 'lodash'
-import { actions, constants } from '@src/modules/BanList'
-import { api } from '@src/services'
-import { actions as loadingActions } from '@src/modules/Loading'
-import { imageUrlCreator } from '@src/helpers'
+import {call, all, put, takeLatest} from 'redux-saga/effects'
+import {actions, constants} from '../index'
+import {getFilms, addFilm} from '../../../adapters/main'
 
-export function * getBanList (action) {
-  const data = action.payload.data
-  yield put(loadingActions.open())
-  try {
-    const response = yield call(api.gateway.getBanList, data)
-    const ids = response.data.coolDowns.map((o) => o.playerId)
-    if (ids?.length) {
-      const { data: idsWithUsernames } = yield call(api.gateway.takeUsernames, ids.filter(Boolean).join(','))
-      const infoArray = response.data.coolDowns.map((el) => {
-        const found = find(idsWithUsernames, ['id', el.playerId])
-        const username = found ? found.username : 'undefined'
-
-        return {
-          ...el,
-          username: username,
-          avatar: `${imageUrlCreator(username)}/avatar.JPEG`
-        }
-      })
-      yield put(actions.getBanList.success({
-        ...response,
-        data: {
-          count: response.data.count,
-          coolDowns: infoArray
-        }
-      }))
-    } else {
-      yield put(actions.getBanList.success(
-        {
-          ...response,
-          data: {
-            count: 0,
-            coolDowns: []
-          }
-        }
-      ))
+export function* getList() {
+    try {
+        const querySnapshot = yield call(getFilms)
+        const data = []
+        querySnapshot.forEach((snapshot) => {
+            data.push(snapshot.data())
+        })
+        yield put(actions.get.success({
+            data
+        }))
+    } catch (e) {
+        const {response, message} = e
+        yield put(actions.get.failure(response, message))
     }
-  } catch (e) {
-    const { response, message } = e
-    yield put(actions.getBanList.failure(response, message))
-  } finally {
-    yield put(loadingActions.close())
-  }
 }
 
-function * removeBan (action) {
-  yield put(loadingActions.open())
-  const { id, ban } = action.payload
-  try {
-    const response = yield call(api.gateway.removeBan, id, ban)
-    yield all([
-      put(actions.removeBan.success(response)),
-      put(actions.getBanList.remove(ban))
-    ])
-  } catch (e) {
-    const { response, message } = e
-    yield put(actions.removeBan.failure(response, message))
-  } finally {
-    yield put(loadingActions.close())
-  }
+export function* addElement(action) {
+    const {data} = action.payload
+    try {
+        yield call(addFilm, data)
+        yield all([
+            put(actions.add.success()),
+            put(actions.get.request()),
+        ])
+    } catch (e) {
+        const {response, message} = e
+        yield put(actions.add.failure(response, message))
+    }
 }
 
-export default function * () {
-  yield takeLatest(constants.BAN_LIST_REQUESTED, getBanList)
-  yield takeLatest(
-    constants.REMOVE_BAN_REQUESTED,
-    removeBan
-  )
+export default function* () {
+    yield takeLatest(constants.LIST_REQUESTED, getList)
+    yield takeLatest(constants.ADD_REQUESTED, addElement)
 }

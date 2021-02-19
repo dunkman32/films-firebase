@@ -14,14 +14,13 @@ export const initialState = {
     },
     error: {
         message: ''
-    },
-    data: []
+    }
 }
 
 const reducer =
     (state = initialState, action) => {
         switch (action.type) {
-            case constants.LIST_REQUESTED:
+            case constants.ADD_REQUESTED:
                 return {
                     ...initialState,
                     statuses: {
@@ -30,7 +29,7 @@ const reducer =
                         isPending: true,
                     },
                 }
-            case constants.LIST_SUCCEEDED:
+            case constants.ADD_SUCCEEDED:
                 return {
                     ...state,
                     statuses: {
@@ -40,9 +39,8 @@ const reducer =
                         isFailed: false,
                         isSucceed: true
                     },
-                    data: getProp(() => action.payload.response.data, [])
                 }
-            case constants.LIST_FAILED:
+            case constants.ADD_FAILED:
                 return {
                     ...initialState,
                     statuses: {

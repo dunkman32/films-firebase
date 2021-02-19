@@ -1,11 +1,9 @@
-// @flow
-
-import * as actions from '@src/modules/BanList/actions'
-import * as constants from '@src/modules/BanList/constants'
-import reducer from '@src/modules/BanList/reducers'
-import saga from '@src/modules/BanList/sagas'
-import * as selectors from '@src/modules/BanList/selectors'
-const moduleName = 'BanList'
+import * as actions from './actions'
+import * as constants from './constants'
+import reducer from './reducers'
+import saga from './sagas'
+import * as selectors from './selectors'
+const moduleName = 'Main'
 
 export {
   moduleName,

@@ -1,6 +1,6 @@
 import { all, spawn, call } from 'redux-saga/effects'
-import { helpers as storeHelpers } from '@affix/redux-store'
-import { getRequireContextModules } from '@src/helpers'
+import { helpers as storeHelpers } from '../config'
+import { getRequireContextModules } from './helpers'
 function * rootSaga () {
   yield all(storeHelpers.getAllModuleSagas(getRequireContextModules()))
   const sagas = storeHelpers
@@ -11,7 +11,6 @@ function * rootSaga () {
    */
   const decentralizedSagas = sagas.map((saga) =>
     spawn(function * () {
-      // eslint-disable-next-line fp/no-loops
       while (true) {
         try {
           yield call(saga)
