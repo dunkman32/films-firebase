@@ -3,5 +3,5 @@ import rootReducer from './reducers'
 import sagas from './sagas'
 
 export const { store, persistor } = baseStore(rootReducer, sagas, {
-  reduxDevTools: true
+  reduxDevTools: process.env.REACT_APP_REDUX_DEVTOOLS
 })
