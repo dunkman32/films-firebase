@@ -23,7 +23,7 @@ const reducer =
         switch (action.type) {
             case constants.LIST_REQUESTED:
                 return {
-                    ...initialState,
+                    ...state,
                     statuses: {
                         ...state.statuses,
                         isStarted: true,
@@ -62,7 +62,7 @@ const reducer =
         }
     }
 const conf = {
-    key: 'main',
+    key: 'list',
     storage
 }
 

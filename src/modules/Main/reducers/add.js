@@ -59,11 +59,5 @@ const reducer =
                 return state
         }
     }
-const conf = {
-    key: 'main',
-    storage
-}
 
-const persistentReducer = persistReducer(conf, reducer)
-
-export default persistentReducer
+export default reducer
