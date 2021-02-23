@@ -2,14 +2,15 @@ import React, {useCallback, useEffect, useState} from 'react';
 import '../../App.css';
 import {useDispatch, useSelector} from 'react-redux'
 import {actions, selectors} from '../../modules/Main'
-import {MdRefresh} from "react-icons/md";
+import {
+    SyncOutlined,
+} from '@ant-design/icons';
 import styled from "styled-components";
 import {format, isValid} from 'date-fns'
-const StyledMdRefresh = styled(MdRefresh)`
-  color: green;
-  margin-left: 1rem;
-  font-size: larger;
-`;
+import {Button, Tooltip, Input} from "antd";
+
+const {Search} = Input;
+
 const HeadDiv = styled.div`
   width: 100%;
   display: flex;
@@ -26,59 +27,51 @@ const ListDiv = styled.div`
   padding: .5rem .5rem .25rem;
   border-bottom: 1px dashed gray;
 `;
-
-const Button = styled.button`
-  padding: 0.25rem 1rem;
-  border-radius: 3px;
-  /* Color the border and text with theme.main */
-  color: ${props => props.theme.main};
-  border: 2px solid ${props => props.theme.main};
+const StyledSearch = styled(Search)`
+  width: 250px;
 `;
 
-const Input = styled.input.attrs(props => ({
-    type: "text",
-    size: props.size || "1rem",
-}))`  
-  padding: 0.25rem;
-  border: 2px solid palevioletred;
-`;
 
 const Index = () => {
     const dispatch = useDispatch()
     const list = useSelector(selectors.selectList)
-    const [name, setName] = useState('')
     const [rows, setRows] = useState([])
 
     useEffect(() => {
         setRows(list.data)
     }, [list])
 
-    const takeList = () => {
-        dispatch(actions.get.request())
-    }
     useEffect(() => {
-        takeList()
-    }, []);
+        dispatch(actions.get.request())
+    }, [dispatch]);
 
-    const addFilm = useCallback(() => {
+    const addFilm = useCallback((name) => {
         dispatch(actions.add.request({name}))
-    }, [name])
+    }, [dispatch])
 
     const formatDate = (d: number) => {
         const date = new Date(d)
-        if(isValid(date)) {
-           return format(date, "yyyy.MM.dd 'at' HH:mm:ss")
+        if (isValid(date)) {
+            return format(date, "yyyy.MM.dd 'at' HH:mm:ss")
         }
         return 'undefined'
     }
 
     return (
         <div className="App">
-            <hr/>
             <HeadDiv>
-                <Input onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setName(e.target.value)}/>
-                <Button onClick={addFilm}> Click to Add</Button>
-                <StyledMdRefresh onClick={takeList}/>
+                <StyledSearch
+                    placeholder="add name"
+                    allowClear
+                    enterButton="Add"
+                    onSearch={addFilm}
+                />
+                <Tooltip title="search">
+                    <Button type="primary" onClick={() => {
+                        dispatch(actions.get.request())
+                    }}
+                            icon={<SyncOutlined/>}/>
+                </Tooltip>
             </HeadDiv>
             <hr/>
             {

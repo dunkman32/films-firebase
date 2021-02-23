@@ -9,7 +9,7 @@ import './App.css';
 import Main from './components/main'
 import {store, persistor} from './redux/store'
 import {PersistGate as BasePersistGate} from 'redux-persist/integration/react'
-
+import 'antd/dist/antd.css';
 
 const App = () => {
     return (
