@@ -6,6 +6,7 @@ import {SyncOutlined,} from '@ant-design/icons';
 import styled from "styled-components";
 import {Button, Input, Tooltip} from "antd";
 import TableComponent from './table'
+import SignOut from '../SignOut';
 
 const {Search} = Input;
 
@@ -52,6 +53,7 @@ const Index = () => {
                         dispatch(actions.get.request())
                     }} icon={<SyncOutlined/>}/>
                 </Tooltip>
+                <SignOut />
             </HeadDiv>
             <hr/>
             {

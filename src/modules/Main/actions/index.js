@@ -2,8 +2,7 @@ import {constants} from '../index'
 import {getAction as action} from '../../../helpers'
 
 export const get = ({
-    request: () =>
-        action(constants.LIST_REQUESTED),
+    request: () => action(constants.LIST_REQUESTED),
     success: (response) =>
         action(constants.LIST_SUCCEEDED, {response}),
     failure: (response, message) =>
