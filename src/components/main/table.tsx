@@ -32,11 +32,14 @@ const TableComponent = ({data}: { data: DataType[] }) => {
     const handleDelete = useCallback((id: string) => () => {
         dispatch(actions.remove.request(id))
     }, [dispatch])
-
+    const rows = data.map(r => ({
+        ...r,
+        key: r.id
+    }))
 
     return (
         <CustomTable
-            dataSource={data}
+            dataSource={rows}
             pagination={{
                 current: 1,
                 pageSize: 20,
