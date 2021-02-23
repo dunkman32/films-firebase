@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import createSagaMiddleware from 'redux-saga'
 import storage from 'redux-persist/lib/storage'
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default (rootReducer, mySaga, { reduxDevTools = false } = {}) => {
     const sagaMiddleware = createSagaMiddleware()
     const persistConfig = {

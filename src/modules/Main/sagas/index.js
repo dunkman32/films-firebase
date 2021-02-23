@@ -1,6 +1,6 @@
 import {all, call, put, takeLatest} from 'redux-saga/effects'
 import {actions, constants} from '../index'
-import {addFilm, getFilms} from '../../../adapters/main'
+import {addFilm, getFilms, removeFilm} from '../../../adapters/main'
 
 export function* getList() {
     try {
@@ -35,7 +35,23 @@ export function* addElement(action) {
     }
 }
 
+export function* remove(action) {
+    const {id} = action.payload
+    try {
+        yield call( removeFilm, id)
+        yield all([
+            put(actions.add.success()),
+            put(actions.get.request()),
+        ])
+    } catch (e) {
+        const {response, message} = e
+        yield put(actions.add.failure(response, message))
+    }
+}
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function* () {
     yield takeLatest(constants.LIST_REQUESTED, getList)
     yield takeLatest(constants.ADD_REQUESTED, addElement)
+    yield takeLatest(constants.REMOVE_REQUESTED, remove)
 }

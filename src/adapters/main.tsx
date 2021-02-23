@@ -15,3 +15,7 @@ export async function getFilms() {
     let query: any = firestore.collection("films")
     return query.orderBy('addDate', 'desc').get()
 }
+
+export async function removeFilm(id: string) {
+    return FILM_COLLECTION.doc(id).delete()
+}

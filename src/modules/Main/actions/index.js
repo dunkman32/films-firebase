@@ -24,3 +24,15 @@ export const add = ({
             message
         })
 })
+
+export const remove = ({
+    request: (id) =>
+        action(constants.REMOVE_REQUESTED, {id}),
+    success: () =>
+        action(constants.REMOVE_SUCCEEDED),
+    failure: (response, message) =>
+        action(constants.REMOVE_FAILED, {
+            response,
+            message
+        })
+})

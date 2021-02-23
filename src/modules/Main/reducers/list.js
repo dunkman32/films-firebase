@@ -1,6 +1,6 @@
 import storage from 'redux-persist/lib/storage'
 import {persistReducer} from 'redux-persist'
-import {constants, selectors} from '../index'
+import {constants} from '../index'
 import {getProp} from '../../../helpers'
 
 
