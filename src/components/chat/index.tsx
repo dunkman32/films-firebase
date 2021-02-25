@@ -1,14 +1,17 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import '../../App.css';
 import {useDispatch, useSelector} from 'react-redux'
-import {actions, selectors} from '../../modules/Main'
-import {selectors as authSelectors} from '../../modules/Auth'
+import {messages} from '../../adapters/main'
+import {actions} from '../../modules/Main'
 import {SyncOutlined,} from '@ant-design/icons';
 import styled from "styled-components";
-import {Button, Input, Tooltip, Typography } from "antd";
+import {Button, Input, Tooltip, Typography} from "antd";
 import TableComponent from './table'
 import SignOut from '../SignOut';
-const { Title } = Typography;
+import {useCollectionData} from 'react-firebase-hooks/firestore';
+import {selectors as authSelectors} from '../../modules/Auth'
+
+const {Title} = Typography;
 const {Search} = Input;
 
 const HeadDiv = styled.div`
@@ -26,28 +29,36 @@ const StyledTitle = styled(Title)`
   font-style: italic;
 `;
 
+interface DataType {
+    text: string,
+    photo: string,
+    uid: string,
+    createdAt: string,
+    displayName: string,
+    id: string
+}
 
 const Index = () => {
     const dispatch = useDispatch()
-    const list = useSelector(selectors.selectList)
     const user = useSelector(authSelectors.selectUser)
-    const [rows, setRows] = useState([])
-    useEffect(() => {
-        setRows(list.data)
-    }, [list])
-
-    useEffect(() => {
-        dispatch(actions.get.request())
-    }, [dispatch]);
-
+    const query = messages().orderBy('createdAt').limit(25);
+    const [rows] = useCollectionData<DataType>(query, {idField: 'id'})
 
     const addFilm = useCallback((name) => {
-        dispatch(actions.add.request({name}))
+        messages().add({
+            text: name,
+            user: user.displayName,
+            photo: user.photoURL,
+            uid: user.uid,
+            createdAt: new Date(),
+        })
     }, [dispatch])
 
     return (
         <div className="App">
-            <StyledTitle  type="secondary" level={4}>Welcome back {user.displayName}</StyledTitle>
+            {
+                rows && <TableComponent data={rows}/>
+            }
             <HeadDiv>
                 <StyledSearch
                     placeholder="add name"
@@ -60,12 +71,10 @@ const Index = () => {
                         dispatch(actions.get.request())
                     }} icon={<SyncOutlined/>}/>
                 </Tooltip>
-                <SignOut />
+                <SignOut/>
             </HeadDiv>
             <hr/>
-            {
-                rows && <TableComponent data={rows}/>
-            }
+
         </div>
     );
 }

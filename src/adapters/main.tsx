@@ -19,3 +19,30 @@ export async function getFilms() {
 export async function removeFilm(id: string) {
     return FILM_COLLECTION.doc(id).delete()
 }
+
+export const messages = () => {
+    return  firestore.collection('messages');
+}
+
+export const listen = () => {
+    const query = firestore.collection('messages')
+
+    return query.onSnapshot(querySnapshot => {
+
+        const a = querySnapshot.docChanges().forEach(change => {
+            if (change.type === 'added') {
+                console.log('New city: ', change.doc.data());
+            }
+            if (change.type === 'modified') {
+                console.log('Modified city: ', change.doc.data());
+            }
+            if (change.type === 'removed') {
+                console.log('Removed city: ', change.doc.data());
+            }
+        });
+        console.log(a);
+        // ...
+    }, err => {
+        console.log(`Encountered error: ${err}`);
+    });
+}

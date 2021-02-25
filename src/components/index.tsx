@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
 import {HashRouter as Router, Route, Switch,} from 'react-router-dom';
 import Main from '../components/main'
+import Chat from '../components/chat'
 import SignIn from '../components/SignIn'
 import {auth} from '../adapters/helpers'
 import {actions, selectors} from '../modules/Auth';
@@ -22,8 +23,8 @@ const Components = () => {
                     <Route path="/" exact>
                         <Main/>
                     </Route>
-                    <Route path="/main" exact>
-                        <Main/>
+                    <Route path="/chat" exact>
+                        <Chat/>
                     </Route>
                 </Switch>
             </Router>
