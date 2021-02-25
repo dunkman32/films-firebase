@@ -20,10 +20,6 @@ export async function removeFilm(id: string) {
     return FILM_COLLECTION.doc(id).delete()
 }
 
-export const messages = () => {
-    return  firestore.collection('messages');
-}
-
 export const listen = () => {
     const query = firestore.collection('messages')
 
